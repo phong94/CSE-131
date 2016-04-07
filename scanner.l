@@ -47,7 +47,7 @@ static void DoBeforeEachAction();
 #define YY_USER_ACTION DoBeforeEachAction();
 
 int currentLineNum, currentColNum;
-
+bool flag = false;
 %}
 
  /* The section before the first %% is the Definitions section of the lex
@@ -114,7 +114,7 @@ BOOLEAN   (true|false)
 "]"		{return T_RightBracket;}
 "{"		{return T_LeftBrace;}
 "}"		{return T_RightBrace;}
-"."		{return T_Dot;}
+"."		{flag = true; return T_Dot;}
 ":"		{return T_Colon;}
 "="		{return T_Equal;}
 ";"		{return T_Semicolon;}
@@ -134,8 +134,12 @@ BOOLEAN   (true|false)
 "&&"		{return T_And;}
 "||"		{return T_Or;}
 
-{IDENTIFIER}	{strcpy(yylval.identifier,yytext); 
+{IDENTIFIER}	{if(!flag) {strcpy(yylval.identifier,yytext); 
 			return T_Identifier;}
+
+		 else {strcpy(yylval.identifier,yytext);
+			return T_FieldSelection;}
+		}
 
 %%
 
