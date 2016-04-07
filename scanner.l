@@ -110,7 +110,7 @@ BOOLEAN   (true|false)
 ")"		{return T_RightParen;}
 ":"		{return T_Colon;}
 ";"		{return T_Semicolon;}
-
+hi pat
 
 "+"		{return T_Plus;}
 "-"		{return T_Dash;}
