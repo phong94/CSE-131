@@ -57,6 +57,7 @@ int currentLineNum, currentColNum;
   * entries in the Rules section later. 
   */
 
+IDENTIFIER ([a-zA-Z_][a-zA-Z0-9_]{0,1023})
 BOOLEAN   (true|false)
 
 %x ML_COMMENT
@@ -109,9 +110,15 @@ BOOLEAN   (true|false)
 
 "("		{return T_LeftParen;}
 ")"		{return T_RightParen;}
+"["		{return T_LeftBracket;}
+"]"		{return T_RightBracket;}
+"{"		{return T_LeftBrace;}
+"}"		{return T_RightBrace;}
+"."		{return T_Dot;}
 ":"		{return T_Colon;}
+"="		{return T_Equal;}
 ";"		{return T_Semicolon;}
-hi pat
+
 
 
 "+"		{return T_Plus;}
@@ -126,6 +133,9 @@ hi pat
 "!="		{return T_NE;}
 "&&"		{return T_And;}
 "||"		{return T_Or;}
+
+{IDENTIFIER}	{strcpy(yylval.identifier,yytext); 
+			return T_Identifier;}
 
 %%
 
