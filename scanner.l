@@ -57,7 +57,7 @@ bool flag = false;
   * entries in the Rules section later. 
   */
 
-IDENTIFIER ([a-zA-Z_][a-zA-Z0-9_]{0,1023})
+IDENTIFIER ([a-zA-Z_][a-zA-Z0-9_]*)
 INTEGER	(-?[0-9])		
 BOOLEAN   (true|false)
 
@@ -92,6 +92,8 @@ FLOAT	([0-9]*[/.][0-9]*[f]?)
 "int"		{return T_Int;}
 "void"		{return T_Void;}
 "bool"		{return T_Bool;}
+"true"		{yylval.boolConstant = true; return T_BoolConstant;}
+"false"		{yylval.boolConstant = false; return T_BoolConstant;}
 "mat2"		{return T_Mat2;}
 "mat3"		{return T_Mat3;}
 "mat4"		{return T_Mat4;}
@@ -145,14 +147,15 @@ FLOAT	([0-9]*[/.][0-9]*[f]?)
 {FLOAT}		{yylval.floatConstant = atof(yytext);
 			return T_FloatConstant;}
 
-{BOOLEAN}	{yylval.boolConstant = yytext;
-			return T_BoolConstant;}
+{IDENTIFIER}	{if(strlen(yytext) > 1023)
+			ReportError::LongIdentifier(&yylloc, yytext);
+		 else {
+			if(!flag) {strncpy(yylval.identifier,yytext,31); 
+				return T_Identifier;}
 
-{IDENTIFIER}	{if(!flag) {strcpy(yylval.identifier,yytext); 
-			return T_Identifier;}
-
-		 else {strcpy(yylval.identifier,yytext);
-			return T_FieldSelection;}
+		 	else {strcpy(yylval.identifier,yytext);
+				return T_FieldSelection;}
+		 }
 		}
 
 %%
