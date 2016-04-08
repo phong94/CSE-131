@@ -58,7 +58,12 @@ bool flag = false;
   */
 
 IDENTIFIER ([a-zA-Z_][a-zA-Z0-9_]{0,1023})
+INTEGER	(-?[0-9])		
 BOOLEAN   (true|false)
+
+FLOAT	([0-9]*[/.][0-9]*[f]?)
+
+
 
 %x ML_COMMENT
 %%             /* BEGIN RULES SECTION */
@@ -133,6 +138,15 @@ BOOLEAN   (true|false)
 "!="		{return T_NE;}
 "&&"		{return T_And;}
 "||"		{return T_Or;}
+
+{INTEGER}	{yylval.integerConstant = atoi(yytext);
+			return T_IntConstant;}
+
+{FLOAT}		{yylval.floatConstant = atof(yytext);
+			return T_FloatConstant;}
+
+{BOOLEAN}	{yylval.boolConstant = yytext;
+			return T_BoolConstant;}
 
 {IDENTIFIER}	{if(!flag) {strcpy(yylval.identifier,yytext); 
 			return T_Identifier;}
