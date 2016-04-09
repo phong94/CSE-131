@@ -59,6 +59,7 @@ bool flag = false;
 
 IDENTIFIER ([a-zA-Z_][a-zA-Z0-9_]*)
 INTEGER	([0-9]+)		
+UINTEGER ([0-9]+[u|U]?)
 BOOLEAN   (true|false)
 
 FLOAT	([0-9]*[/.][0-9]*[f]?)
@@ -153,6 +154,9 @@ SINGLE_COMMENT    ("//"[^\n]*)
 
 {INTEGER}	{yylval.integerConstant = atoi(yytext);
 			return T_IntConstant;}
+
+{UINTEGER}	{yylval.integerConstant = atoi(yytext);
+			return T_UintConstant;}
 
 {FLOAT}		{yylval.floatConstant = atof(yytext);
 			return T_FloatConstant;}
