@@ -62,7 +62,7 @@ INTEGER	(-?[0-9])
 BOOLEAN   (true|false)
 
 FLOAT	([0-9]*[/.][0-9]*[f]?)
-
+SINGLE_COMMENT    ("//"[^\n]*)
 
 
 %x ML_COMMENT
@@ -72,8 +72,17 @@ FLOAT	([0-9]*[/.][0-9]*[f]?)
   */ 
 
 [\n]	{currentLineNum++; currentColNum = 1;}
-[\t]	{currentColNum += 8;}	
+[\t]	{currentColNum += 8 - currentColNum % 8;}	
 [ ]	{}
+
+"/*"				BEGIN(ML_COMMENT);
+<ML_COMMENT>[^*\n]*		{ /* ignore anything that is not '*' */ }
+<ML_COMMENT>"*"+[^*\/n]*	{ /* ignore '*'s not followed by '/' */ }
+<ML_COMMENT>\n			{ currentLineNum++; }
+<ML_COMMENT>"*"+"/"		BEGIN(INITIAL);
+
+{SINGLE_COMMENT}		{}
+
 "const"		{return T_Const;}
 "uniform"	{return T_Uniform;}
 "while"		{return T_While;}
@@ -147,13 +156,19 @@ FLOAT	([0-9]*[/.][0-9]*[f]?)
 {FLOAT}		{yylval.floatConstant = atof(yytext);
 			return T_FloatConstant;}
 
-{IDENTIFIER}	{if(strlen(yytext) > 1023)
-			ReportError::LongIdentifier(&yylloc, yytext);
+{IDENTIFIER}	{if(strlen(yytext) > 1023) {
+			ReportError::LongIdentifier(&yylloc, (const char*)yytext);
+			if(!flag) {
+				strncpy(yylval.identifier, yytext, 31);
+				return T_Identifier; }
+			else {
+				return T_FieldSelection; }
+		 }
 		 else {
-			if(!flag) {strncpy(yylval.identifier,yytext,31); 
+			if(!flag) {strncpy(yylval.identifier, yytext, 31); 
 				return T_Identifier;}
 
-		 	else {strcpy(yylval.identifier,yytext);
+		 	else {
 				return T_FieldSelection;}
 		 }
 		}
