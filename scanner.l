@@ -173,6 +173,7 @@ SINGLE_COMMENT    ("//"[^\n]*)
 		 }
 		}
 
+.		{ReportError::UnrecogChar(&yylloc, yytext[0]);}
 %%
 
 /* The closing %% above marks the end of the Rules section and the beginning
