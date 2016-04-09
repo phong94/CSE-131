@@ -58,7 +58,7 @@ bool flag = false;
   */
 
 IDENTIFIER ([a-zA-Z_][a-zA-Z0-9_]*)
-INTEGER	(-?[0-9])		
+INTEGER	([0-9]+)		
 BOOLEAN   (true|false)
 
 FLOAT	([0-9]*[/.][0-9]*[f]?)
@@ -79,10 +79,12 @@ SINGLE_COMMENT    ("//"[^\n]*)
 <ML_COMMENT>[^*\n]*		{ /* ignore anything that is not '*' */ }
 <ML_COMMENT>"*"+[^*\/n]*	{ /* ignore '*'s not followed by '/' */ }
 <ML_COMMENT>\n			{ currentLineNum++; }
+<ML_COMMENT><<EOF>>		{ ReportError::UntermComment(); return 0; }
 <ML_COMMENT>"*"+"/"		BEGIN(INITIAL);
 
 {SINGLE_COMMENT}		{}
 
+"void"		{return T_Void;}
 "const"		{return T_Const;}
 "uniform"	{return T_Uniform;}
 "while"		{return T_While;}
@@ -99,7 +101,6 @@ SINGLE_COMMENT    ("//"[^\n]*)
 "out"		{return T_Out;}
 "float"		{return T_Float;}
 "int"		{return T_Int;}
-"void"		{return T_Void;}
 "bool"		{return T_Bool;}
 "true"		{yylval.boolConstant = true; return T_BoolConstant;}
 "false"		{yylval.boolConstant = false; return T_BoolConstant;}
