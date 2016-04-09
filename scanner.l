@@ -86,6 +86,9 @@ SINGLE_COMMENT    ("//"[^\n]*)
 {SINGLE_COMMENT}		{}
 
 "void"		{return T_Void;}
+"int"		{return T_Int;}
+"uint"		{return T_Uint;}
+"break"	{return T_Break;}
 "const"		{return T_Const;}
 "uniform"	{return T_Uniform;}
 "while"		{return T_While;}
@@ -101,10 +104,7 @@ SINGLE_COMMENT    ("//"[^\n]*)
 "in"		{return T_In;}
 "out"		{return T_Out;}
 "float"		{return T_Float;}
-"int"		{return T_Int;}
 "bool"		{return T_Bool;}
-"true"		{yylval.boolConstant = true; return T_BoolConstant;}
-"false"		{yylval.boolConstant = false; return T_BoolConstant;}
 "mat2"		{return T_Mat2;}
 "mat3"		{return T_Mat3;}
 "mat4"		{return T_Mat4;}
@@ -120,10 +120,8 @@ SINGLE_COMMENT    ("//"[^\n]*)
 "uvec2"		{return T_Uvec2;}
 "uvec3"		{return T_Uvec3;}
 "uvec4"		{return T_Uvec4;}
-"uint"		{return T_Uint;}
 "return"	{return T_Return;}
 "struct"	{return T_Struct;}
-
 
 
 "("		{return T_LeftParen;}
@@ -134,23 +132,33 @@ SINGLE_COMMENT    ("//"[^\n]*)
 "}"		{return T_RightBrace;}
 "."		{flag = true; return T_Dot;}
 ":"		{return T_Colon;}
-"="		{return T_Equal;}
 ";"		{return T_Semicolon;}
+"?"		{return T_Question;}
+"="		{return T_Equal;}
 
 
-
+"++"	{return T_Inc;}
+"--"	Preturn T_Dec;}
+"<="	{return T_LessEqual;}
+">="	{return T_GreaterEqual;}
+"=="	{return T_EQ;}
+"!="	{return T_NE;}
+"&&"	{return T_And;}
+"||"	{return T_Or;}
+"*="	{return T_MulAssign;}
+"/="	{return T_DivAssign;}
+"+="	{return T_AddAssign;}
+"-+"	{return T_SubAssign;}
 "+"		{return T_Plus;}
 "-"		{return T_Dash;}
 "*"		{return T_Star;}
 "/"		{return T_Slash;}
 "<"		{return T_LeftAngle;}
 ">"		{return T_RightAngle;}
-"<="		{return T_LessEqual;}
-">="		{return T_GreaterEqual;}
-"=="		{return T_EQ;}
-"!="		{return T_NE;}
-"&&"		{return T_And;}
-"||"		{return T_Or;}
+
+
+"true"		{yylval.boolConstant = true; return T_BoolConstant;}
+"false"		{yylval.boolConstant = false; return T_BoolConstant;}
 
 {INTEGER}	{yylval.integerConstant = atoi(yytext);
 			return T_IntConstant;}
